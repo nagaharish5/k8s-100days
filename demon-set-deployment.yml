@@ -1,24 +1,32 @@
-kubectl   create deployment --image=httpd:2.4-alpine ds-important --dry-run=client -o yaml -n project-tiger
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: ds-important
-  name: ds-important
+     id: ds-important                                # add
+     uuid: 18426a0b-5f59-4e10-923f-c0e078e82462 
+     app: ds-important-1
+  name: ds-important-1
   namespace: project-tiger
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: ds-important
+      id: ds-important                              # add
+      uuid: 18426a0b-5f59-4e10-923f-c0e078e82462    # ad
   strategy: {}
   template:
     metadata:
       labels:
-        app: ds-important
+        id: ds-important                            # add
+        uuid: 18426a0b-5f59-4e10-923f-c0e078e82462  # ad
     spec:
       containers:
       - image: httpd:2.4-alpine
         name: httpd
-        resources: {}
-status: {}
+        resources: 
+            requests:                                 # add
+             cpu: 10m                                # add
+             memory: 10Mi
+      tolerations:                       #add         
+        - effect: NoSchedule         # add
+          key: node-role.kubernetes.io/control-plane  # add
