@@ -1,0 +1,24 @@
+kubectl   create deployment --image=httpd:2.4-alpine ds-important --dry-run=client -o yaml -n project-tiger
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: ds-important
+  name: ds-important
+  namespace: project-tiger
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ds-important
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: ds-important
+    spec:
+      containers:
+      - image: httpd:2.4-alpine
+        name: httpd
+        resources: {}
+status: {}
