@@ -1,0 +1,11 @@
+The GKE "Invisible" Control Plane
+Since you are using GKE (Google Kubernetes Engine), the Control Plane nodes are fully managed by Google in a separate, hidden project.
+
+They do not appear in your kubectl get nodes list.
+
+Because they are managed by Google, you cannot schedule pods on them, even with a toleration.
+
+In GKE, your "Cluster" consists of your hidden Control Plane and your visible Worker Nodes. Your pods can only live on the Worker Nodes.
+
+
+Since you're on GKE, would you like to try adding a second Worker Node to your cluster so you can see how the Cluster balances pods between two different machines?
