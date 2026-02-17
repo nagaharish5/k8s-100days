@@ -1,0 +1,30 @@
+The Deployment "ds-important-1" is invalid: spec.selector: Invalid value: {"matchLabels":{"app":"ds-important","id":"ds-important","uuid":"18426a0b-5f59-4e10-923f-c0e078e82462"}}: field is immutable
+
+
+This error occurs when you try to modify the selector field of an existing Deployment, which is immutable (cannot be changed after creation).
+
+Understanding the Error
+spec.selector: Invalid value: ... field is immutable
+What happened:
+
+You have an existing Deployment named ds-important-1
+You tried to change its .spec.selector.matchLabels
+Kubernetes does not allow changing selectors after a Deployment is created
+The selector is permanently locked at creation time
+
+
+Why Selectors Are Immutable
+The selector defines which Pods belong to the Deployment. If it could change:
+
+Existing Pods would become "orphaned"
+New Pods would have different labels
+Deployment would lose track of its Pods
+Chaos would ensue!
+
+Immutable fields in Deployments:
+
+.spec.selector
+.metadata.name (obviously)
+
+
+kubectl delete deployment ds-important-1
