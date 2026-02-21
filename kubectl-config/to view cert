@@ -1,0 +1,5 @@
+kubectl config view -o yaml  --raw
+
+then to see the 
+
+ echo LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUN2RE... | base64 -d
