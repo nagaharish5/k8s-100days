@@ -1,0 +1,25 @@
+Question 2 | MinIO Operator, CRD Config, Helm Install
+Solve this question on: 
+ssh cka7968
+Install the MinIO Operator using Helm in Namespace
+1. Create Namespace
+2. Install Helm chart 
+minio
+minio 
+. Then configure and create the Tenant CRD:
+minio/operator
+ into the new Namespace. The Helm Release should be called 
+3. Update the 
+4. Create the 
+Tenant
+ resource in 
+/opt/course/2/minio-tenant.yaml
+ to include 
+Tenant
+ resource from 
+/opt/course/2/minio-tenant.yaml
+minio-operator
+enableSFTP: true
+ under 
+features
+ℹ It is not required for MinIO to run properly. Installing the Helm Chart and the Tenant resource as requested is enoug
