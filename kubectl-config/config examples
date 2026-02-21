@@ -1,0 +1,25 @@
+
+https://kubernetes.io/docs/reference/kubectl/generated/kubectl_config/
+
+kubectl - kubectl controls the Kubernetes cluster manager
+kubectl config current-context - Display the current-context
+kubectl config delete-cluster - Delete the specified cluster from the kubeconfig
+kubectl config delete-context - Delete the specified context from the kubeconfig
+kubectl config delete-user - Delete the specified user from the kubeconfig
+kubectl config get-clusters - Display clusters defined in the kubeconfig
+kubectl config get-contexts - Describe one or many contexts
+kubectl config get-users - Display users defined in the kubeconfig
+kubectl config rename-context - Rename a context from the kubeconfig file
+kubectl config set - Set an individual value in a kubeconfig file
+kubectl config set-cluster - Set a cluster entry in kubeconfig
+kubectl config set-context - Set a context entry in kubeconfig
+kubectl config set-credentials - Set a user entry in kubeconfig
+kubectl config unset - Unset an individual value in a kubeconfig file
+kubectl config use-context - Set the current-context in a kubeconfig file
+kubectl config view - Display merged kubeconfig settings or a specified kubeconfig file
+
+
+
+
+harish@Harish:/mnt/d/vs code$ kubectl config current-context
+gke_extreme-water-482617-q4_us-central1-a_cluster-1
