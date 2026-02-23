@@ -29,3 +29,54 @@ Events:
   ----     ------             ----  ----                -------
   Warning  FailedScheduling   12s   default-scheduler   0/1 nodes are available: pod has unbound immediate PersistentVolumeClaims. not found
   Normal   NotTriggerScaleUp  12s   cluster-autoscaler  Pod didn't trigger scale-up:
+
+
+
+https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/
+Claude
+################################################################################
+
+Before my edit, the PV did **not** have `nodeAffinity`:
+
+```yaml
+# BEFORE - no nodeAffinity
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/mnt/data"
+```
+
+```yaml
+# AFTER - with nodeAffinity
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/mnt/data"
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values:
+                - kube-01
+```
+
+**Why it matters:**
+
+| | Without nodeAffinity | With nodeAffinity |
+|---|---|---|
+| PV location | Any node | Locked to `kube-01` |
+| Risk | PV created on wrong node, Pod can't access data | PV and Pod always on same node |
+| `hostPath` data | May not be found | Guaranteed to match |
+
+Since your Pod uses `hostPath` + `nodeSelector: kube-01`, the PV **must** also be pinned to `kube-01` — otherwise the Pod could theoretically bind to a PV on a different node where the `/mnt/data` path doesn't exist or has different data.
+################################################################################
