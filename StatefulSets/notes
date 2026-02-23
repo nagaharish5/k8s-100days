@@ -9,3 +9,23 @@ Like a Deployment, a StatefulSet manages Pods that are based on an identical con
 
 If you want to use storage volumes to provide persistence for your workload, you can use a StatefulSet as part of the solution. Although individual Pods in a StatefulSet are susceptible to failure, the persistent Pod identifiers make it easier to match existing volumes to the new Pods that replace any that have failed.
 
+
+
+
+
+Error 
+
+
+Events:
+  Type     Reason             Age   From                Message
+  ----     ------             ----  ----                -------
+  Warning  FailedScheduling   71s   default-scheduler   0/1 nodes are available: pod has unbound immediate PersistentVolumeClaims. not found
+  Normal   NotTriggerScaleUp  72s   cluster-autoscaler  Pod didn't trigger scale-up:
+
+errors
+
+Events:
+  Type     Reason             Age   From                Message
+  ----     ------             ----  ----                -------
+  Warning  FailedScheduling   12s   default-scheduler   0/1 nodes are available: pod has unbound immediate PersistentVolumeClaims. not found
+  Normal   NotTriggerScaleUp  12s   cluster-autoscaler  Pod didn't trigger scale-up:
