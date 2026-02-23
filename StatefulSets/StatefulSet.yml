@@ -54,11 +54,4 @@ spec:
 
 
 
-Error 
 
-
-Events:
-  Type     Reason             Age   From                Message
-  ----     ------             ----  ----                -------
-  Warning  FailedScheduling   71s   default-scheduler   0/1 nodes are available: pod has unbound immediate PersistentVolumeClaims. not found
-  Normal   NotTriggerScaleUp  72s   cluster-autoscaler  Pod didn't trigger scale-up:
