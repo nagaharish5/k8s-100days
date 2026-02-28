@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flask-hello
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: flask-hello
+  template:
+    metadata:
+      labels:
+        app: flask-hello
+    spec:
+      containers:
+      - name: flask-hello
+        image: flask-hello-2
+        resources:
+          requests:
+            cpu: "100m"      # Critical: HPA uses this as the 100% mark
+            memory: "128Mi"
+          limits:
+            cpu: "200m"      # Hard cap to prevent one pod from eating the node
+            memory: "256Mi"
+        ports:
+        - containerPort: 5000
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 5000
+          initialDelaySeconds: 5
+          periodSeconds: 5
