@@ -1,0 +1,27 @@
+If your HPA (Horizontal Pod Autoscaler) isn't scaling even though two pods are under heavy load, it’s usually because of a missing "bridge" between your code's reality and Kubernetes' math.
+
+Here is why your pods are hogging the load without scaling:
+
+1. The "Unknown" Metrics Trap
+If the HPA cannot read the CPU/Memory usage, it will never scale.
+Run this command: kubectl get hpa
+
+If you see <unknown>/50% in the TARGETS column, your HPA is blind.
+
+The Fix: You must define resources.requests in your Deployment YAML. HPA calculates percentages based on what you requested, not the node's total capacity.
+
+
+##############################################################################
+
+
+Your HPA manifest is structurally correct, but it is currently "blind." For an HPA to scale based on averageUtilization: 50, it needs to know what 100% looks like.If you haven't defined Resources Requests in your Deployment, Kubernetes has no denominator for its math ($Current / Request = \%$). Without it, the HPA will show <unknown> and stay at 2 replicas forever.
+
+
+Why it's not scaling right now
+Missing Base: Without requests.cpu, the HPA doesn't know if 10% of a CPU core is "heavy load" or "idle."
+
+Metrics Server: GKE needs the Metrics Server to be running to provide the data.
+
+Test this: Run kubectl top pods.
+
+If it returns error: Metrics API not available, you need to enable it in your GKE cluster settings (though it's usually on by default).
