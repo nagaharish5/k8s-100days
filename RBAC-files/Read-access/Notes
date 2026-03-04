@@ -1,122 +1,36 @@
-Here's everything you need to give developers **read-only log access** in Kubernetes using RBAC:
+How groups are in RBAC 
 
----
+AWS EKS (IAM Roles)
+Groups are defined in the aws-auth ConfigMap:
+bashkubectl edit configmap aws-auth -n kube-system
+yamlmapRoles:
+  - rolearn: arn:aws:iam::123456789:role/DeveloperRole
+    username: developer-{{SessionName}}
+    groups:
+      - developers          # 👈 this matches your RoleBinding
+Any user who assumes that IAM role gets added to the developers group automatically.
 
-## Kubernetes RBAC for Developer Log Access
 
-### 1. ClusterRole — defines what's allowed
 
-```yaml
-# developer-log-reader-clusterrole.yaml
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRole
-metadata:
-  name: developer-log-reader
-rules:
-  - apiGroups: [""]
-    resources: ["pods", "pods/log"]
-    verbs: ["get", "list", "watch"]
-  - apiGroups: [""]
-    resources: ["namespaces"]
-    verbs: ["get", "list"]
-```
+Option 3 — Azure AKS (Azure AD)
+bash# 1. Create a group in Azure AD
+az ad group create --display-name "K8s Developers" --mail-nickname "k8s-developers"
 
-> This grants read access to pods and their logs across the cluster.
+# 2. Get the group Object ID
+az ad group show --group "K8s Developers" --query id -o tsv
+# e.g. returns: a1b2c3d4-xxxx-xxxx-xxxx-xxxxxxxxxxxx
 
----
+# 3. Add members to the group
+az ad group member add --group "K8s Developers" --member-id <user-object-id>
 
-### 2. Option A — Namespace-scoped (recommended)
 
-Restrict developers to specific namespaces using a **RoleBinding**:
 
-```yaml
-# developer-log-rolebinding.yaml
-apiVersion: rbac.authorization.k8s.io/v1
-kind: RoleBinding
-metadata:
-  name: developer-log-reader-binding
-  namespace: your-namespace        # 👈 change this
-subjects:
-  - kind: User
-    name: developer@example.com    # 👈 or use a Group
-    apiGroup: rbac.authorization.k8s.io
-roleRef:
-  kind: ClusterRole
-  name: developer-log-reader
-  apiGroup: rbac.authorization.k8s.io
-```
-
-Apply it:
-```bash
-kubectl apply -f developer-log-reader-clusterrole.yaml
-kubectl apply -f developer-log-rolebinding.yaml
-```
-
----
-
-### 3. Option B — Cluster-wide access
-
-If the developer needs logs across **all namespaces**, use a **ClusterRoleBinding** instead:
-
-```yaml
-# developer-log-clusterrolebinding.yaml
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRoleBinding
-metadata:
-  name: developer-log-reader-global
-subjects:
-  - kind: User
-    name: developer@example.com
-    apiGroup: rbac.authorization.k8s.io
-roleRef:
-  kind: ClusterRole
-  name: developer-log-reader
-  apiGroup: rbac.authorization.k8s.io
-```
-
----
-
-### 4. For a Group of developers
-
-Replace `kind: User` with `kind: Group` to apply to many users at once:
-
-```yaml
-subjects:
+Option 4 — Google GKE (Google Groups)
+bash# Enable Google Groups for RBAC when creating/updating cluster
+gcloud container clusters update your-cluster \
+  --security-group="gke-security-groups@yourdomain.com"
+Then create a Google Group (e.g. developers@yourdomain.com) in Google Admin, add your developers to it, and use it in the RoleBinding:
+yamlsubjects:
   - kind: Group
-    name: developers          # matches group in your identity provider
+    name: developers@yourdomain.com   # Google Group email
     apiGroup: rbac.authorization.k8s.io
-```
-
----
-
-### 5. Verify the access
-
-```bash
-# Test as a specific user
-kubectl auth can-i get pods/log --namespace=your-namespace --as=developer@example.com
-
-# List what a user can do
-kubectl auth can-i --list --namespace=your-namespace --as=developer@example.com
-```
-
----
-
-### What developers can do with this access
-
-```bash
-# View logs of a pod
-kubectl logs <pod-name> -n your-namespace
-
-# Follow/stream logs
-kubectl logs -f <pod-name> -n your-namespace
-
-# Logs from a specific container
-kubectl logs <pod-name> -c <container-name> -n your-namespace
-
-# Previous container logs (after crash)
-kubectl logs <pod-name> --previous -n your-namespace
-```
-
----
-
-**Key decision:** Use **RoleBinding** (namespace-scoped) unless developers genuinely need cross-namespace visibility — principle of least privilege applies. Let me know if you'd like this tailored to a specific auth provider (OIDC, AWS IAM, GKE Workload Identity, etc.).
