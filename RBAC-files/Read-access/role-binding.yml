@@ -1,0 +1,14 @@
+# developer-log-rolebinding.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: developer-log-reader-binding
+  namespace: your-namespace        # 👈 change this
+subjects:
+  - kind: User
+    name: developer@example.com    # 👈 or use a Group
+    apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: ClusterRole
+  name: developer-log-reader
+  apiGroup: rbac.authorization.k8s.io
