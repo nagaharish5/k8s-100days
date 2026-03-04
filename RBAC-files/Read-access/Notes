@@ -1,4 +1,32 @@
 How groups are in RBAC 
+1.
+
+
+# 1. Generate a private key
+openssl genrsa -out developer.key 2048
+
+# 2. Create a CSR — the /O= field becomes the Group name in Kubernetes
+openssl req -new -key developer.key -out developer.csr \
+  -subj "/CN=john@example.com/O=developers"
+#                                    👆 this is the group
+
+# 3. Sign it with the cluster CA
+openssl x509 -req -in developer.csr \
+  -CA /etc/kubernetes/pki/ca.crt \
+  -CAkey /etc/kubernetes/pki/ca.key \
+  -CAcreateserial -out developer.crt -days 365
+
+# 4. Create kubeconfig for the developer
+kubectl config set-credentials john \
+  --client-certificate=developer.crt \
+  --client-key=developer.key
+
+kubectl config set-context john-context \
+  --cluster=your-cluster \
+  --user=john
+
+
+2
 
 AWS EKS (IAM Roles)
 Groups are defined in the aws-auth ConfigMap:
