@@ -1,0 +1,4 @@
+subjects:
+  - kind: Group
+    name: developers          # matches group in your identity provider
+    apiGroup: rbac.authorization.k8s.io
