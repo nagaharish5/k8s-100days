@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: blog-service
+  annotations:
+    # This enables Network Endpoint Groups (NEGs), which Envoy uses for better performance
+    cloud.google.com/neg: '{"ingress": true}' 
+spec:
+  selector:
+    app: blog
+  ports:
+  - protocol: TCP
+    port: 80      # The port the Gateway will hit
+    targetPort: 5050 # The port your pod is listening on
+  type: ClusterIP
