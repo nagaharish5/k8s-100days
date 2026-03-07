@@ -2,3 +2,16 @@
 
 Testing a GKE Gateway API setup is a multi-step process. You need to verify that the "Control Plane" (Kubernetes resources) is healthy, then check if the "Data Plane" (Envoy/Load Balancer) has provisioned correctly, and finally perform a live traffic test.
 ##############################
+###############################
+Error when deploying
+################
+
+Events:
+  Type     Reason     Age                  From               Message
+  ----     ------     ----                 ----               -------
+  Normal   Scheduled  35m                  default-scheduler  Successfully assigned default/blog-deployment-7f596d959f-g6lmv to gke-cluster-1-default-pool-647bf77d-okde
+  Normal   Pulling    35m                  kubelet            Pulling image "us-central1-docker.pkg.dev/extreme-water-482617-q4/python-hellowolrd/flask-hello-2"
+  Normal   Pulled     35m                  kubelet            Successfully pulled image "us-central1-docker.pkg.dev/extreme-water-482617-q4/python-hellowolrd/flask-hello-2" in 571ms (571ms including waiting). Image size: 48838479 bytes.
+  Normal   Created    35m                  kubelet            Created container: blog-container
+  Normal   Started    35m                  kubelet            Started container blog-container
+  Warning  Unhealthy  35s (x435 over 35m)  kubelet            Readiness probe failed: Get "http://10.16.0.59:5050/": dial tcp 10.16.0.59:5050: connect: connection refused
