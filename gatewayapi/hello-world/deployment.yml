@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: blog-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: blog
+  template:
+    metadata:
+      labels:
+        app: blog
+    spec:
+      containers:
+      - name: blog-container
+        image: python-hellowolrd/flask-hello-2
+        ports:
+        - containerPort: 5050
+        readinessProbe:
+          httpGet:
+            path: /  # Use / if you don't have a /healthz route in Flask
+            port: 5050
+          initialDelaySeconds: 5
+          periodSeconds: 5   
