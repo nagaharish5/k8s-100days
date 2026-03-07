@@ -1,0 +1,4 @@
+##gemini########
+
+Testing a GKE Gateway API setup is a multi-step process. You need to verify that the "Control Plane" (Kubernetes resources) is healthy, then check if the "Data Plane" (Envoy/Load Balancer) has provisioned correctly, and finally perform a live traffic test.
+##############################
