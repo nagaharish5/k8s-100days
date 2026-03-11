@@ -1,2 +1,16 @@
 https://kubernetes.io/docs/concepts/services-networking/gateway/
 https://gateway-api.sigs.k8s.io/
+---------------------------------------------------------------------------------------------
+https://kubernetes.io/blog/2025/11/06/gateway-api-v1-4/
+2025,Nov
+Gateway API v1.4.0 brings three new features to the Standard channel (Gateway API's GA release channel):
+
+BackendTLSPolicy for TLS between gateways and backends
+supportedFeatures in GatewayClass status
+Named rules for Routes
+and introduces three new experimental features:
+
+Mesh resource for service mesh configuration
+Default gateways to ease configuration burden**
+externalAuth filter for HTTPRoute
+-----------------------------------------------------------------------------------------------------------
