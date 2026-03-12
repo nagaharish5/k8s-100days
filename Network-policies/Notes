@@ -1,0 +1,32 @@
+Gemini
+
+This YAML file defines a Kubernetes **NetworkPolicy** named `test-network-policy`. Think of it as a firewall rule that dictates exactly what network traffic is allowed in and out of specific pods.
+
+Here is a plain-English breakdown of exactly what this policy does:
+
+### 1. The Target (Who this applies to)
+
+* **Target Pods:** It applies only to pods in the `default` namespace that have the label `role: db`.
+* **Policy Types:** Because both `Ingress` and `Egress` are listed, it explicitly blocks **all** incoming and outgoing traffic for these `db` pods by default, *except* for what is explicitly permitted in the rules below.
+
+### 2. Ingress Rules (Incoming Traffic)
+
+This policy allows incoming traffic to the `db` pods **only on TCP port 6379** (which is typically used for Redis) if the traffic comes from **any one** of the following three sources:
+
+* **Source 1 (IP Block):** Any external IP address in the `172.17.0.0/16` range, **except** those in the `172.17.1.0/24` sub-range.
+* **Source 2 (Namespace):** Any pod located in a namespace that has the label `project: myproject`.
+* **Source 3 (Pod):** Any pod in the *same* (`default`) namespace that has the label `role: frontend`.
+
+*(Note: Because these three sources are listed with individual dashes (`-`) under `from:`, they are treated as a logical **OR**. If they were listed without the extra dashes, it would act as a logical AND).*
+
+### 3. Egress Rules (Outgoing Traffic)
+
+This policy allows outgoing traffic from the `db` pods **only on TCP port 5978** to:
+
+* **Destination:** Any IP address within the `10.0.0.0/24` CIDR block.
+
+**Important Catch:** Because this policy restricts egress and doesn't explicitly allow UDP port 53, these `db` pods **will not be able to resolve DNS names**. They will only be able to communicate using raw IP addresses unless you add a rule allowing DNS traffic.
+
+---
+
+Would you like me to show you how to add the DNS resolution rule to the Egress section so your pods can resolve domain names?
